@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ニコニコプロジェクト</title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/hirasawa.css">
+
+    <script src="http://trompot.mydns.jp:8090/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <!-- Twitterコメントを流す -->
+    <div class="area comment-area" id="comment"></div>
+
+    <!-- 広告用画像を流す -->
+    <div class="area images-area">
+        <img src="" style="width: 100%;" id="image">
+    </div>
+
+    <!-- 広告用動画を流す -->
+    <div class="area video-area">
+        <video class="video" src="" autoplay width="100%"  id="video"></video>
+    </div>
+
+    <!-- Susumu Hirasawa用 Socket -->
+    <div class="area susumuhirasawa" id="susumu"></div>
+
+    <!-- 固定文字描画 -->
+    <div class="area text-area">
+        <h1 id="text"></h1>
+    </div>
+    <script>
+        // サーバに接続
+        var socketio = io.connect('http://trompot.mydns.jp:8090');
+
+        socketio.on("comment", function (data) { addMessage(data.value); });
+        socketio.on("video", function (data) { addVideo(data.value); });
+        socketio.on("images", function (data) { addImages(data.value); });
+        socketio.on("text", function (data) { setText(data.value); });
+        socketio.on("susumuhirasawa",  function (data) { startSusumuHirasawa(data.value); });
+
+        // Socketから受け取ったものを表示
+        function addMessage (msg) {
+            // コメントを画面に表示
+            var msgArea = document.getElementById("comment");
+            var marguee = document.createElement('div');
+            marguee.classList.add('marquee-inner');
+            marguee.style.top = getRandomNum(1000) + "px";
+            marguee.innerHTML = msg;
+            msgArea.appendChild(marguee);
+
+            // 20秒後に削除
+            setTimeout(() => {
+                marguee.remove();
+            }, 20000);
+        }
+
+        // 広告動画
+        function addVideo (msg) {
+            // 表示されている広告を削除
+            removeAdd();
+
+            // 動画のファイル名を送受信
+            var video = document.getElementById("video");
+            video.src = 'video/' + msg;
+        }
+
+        // 広告画像
+        function addImages (msg) {
+            // 表示されている広告を削除
+            removeAdd();
+
+            // 画像ファイル名の送受信
+            var image = document.getElementById("image");
+            image.src = 'images/' + msg;
+        }
+
+        // 固定文字の表示
+        function setText (msg) {
+            var text = document.getElementById('text');
+            text.innerHTML = msg;
+        }
+
+        // SusumuHirasawa開始
+        function startSusumuHirasawa (msg) {
+            // コメントを画面に表示
+            var area = document.getElementById("susumu");
+            var effect_erea = document.createElement('div');
+            area.appendChild(effect_start(effect_erea));
+
+            // 3s秒後に削除
+            setTimeout(() => {
+                effect_end(effect_erea, area);
+            }, 1000);
+        }
+        
+        // Hirasawa関連
+        function effect_start(effect_erea){
+
+            var color = ['red', 'pink', 'orange', 'blue', 'yellowgreen', 'green'];
+            // 余白の値生成
+            var top = getRandomNum(500);
+            var left = getRandomNum(800);
+            var col = getRandomNum(7);
+            var tt = top;
+            effect_erea.classList.add('effect');
+            effect_erea.style.marginTop = tt + 'px';
+            effect_erea.style.backgroundColor = color[col];
+            effect_erea.style.marginLeft = left + 'px';
+            // console.log(effect_erea);
+            return effect_erea;
+        }
+        function effect_end(effect_erea, area){
+            effect_erea.classList.remove('effect');
+            effect_erea.style.marginTop = '';
+            effect_erea.style.marginLeft = '';
+            area.removeChild(effect_erea);
+        }
+
+
+        // 広告消す
+        function removeAdd(){
+            var image = document.getElementById("image");
+            image.src = '';
+
+            var video = document.getElementById("video");
+            video.src = '';
+        }
+
+        // 乱数発生装置
+        function getRandomNum(num){
+            return Math.floor( Math.random() * num ) ;
+        }
+    </script>
+    
+</body>
+</html>

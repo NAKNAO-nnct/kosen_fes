@@ -1,0 +1,69 @@
+body {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    color: white;
+    font-size: 35px;
+    overflow: hidden;
+}
+
+.area {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.comment-area {
+    text-align: right;
+}
+
+.images-area, .video-area, .susumuhirasawa, .text-area{
+    text-align: center;
+    z-index: -1;
+}
+
+.text-area {
+    top: 40%;
+    color: brown;
+}
+
+/** マーキーさせたい部分 */
+.comment-area {
+    overflow: hidden; /* スクロールバーが出ないように */
+    /* position: relative; マーキーの内容部分の位置の基準になるように */
+}
+/* マーキーの内容部分の高さ確保 */
+.comment-area::after {
+    content: "";
+    white-space: nowrap;
+    display: inline-block;
+}
+/* マーキーさせたい部分(内側) */
+.comment-area > .marquee-inner {
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+    animation-name: marquee;
+    animation-timing-function: linear;
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+}
+
+/* マウスオーバーでマーキーストップ */
+.comment-area > .marquee-inner:hover {
+    animation-play-state: paused;
+    cursor: default;
+}
+
+/** マーキーアニメーション */
+@keyframes marquee {
+    0% { 
+        left: 100%; 
+        transform: translate(0); 
+    }
+    100% { 
+        left: 0; 
+        transform: translate(-100%);
+    }
+}

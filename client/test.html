@@ -1,0 +1,71 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ホソミチチャット</title>
+</head>
+<body>
+  <input type="text" id="msg_input" style="width:200px;" />
+  <button onclick="publishComment();">語る</button>
+  <button onclick="publishImages();">画像挿入</button>
+  <button onclick="publishVideo();">動画挿入</button>
+  <button onclick="publishText();">文字挿入</button>
+  <div id="msg"></div>
+  <script src="http://trompot.mydns.jp:8090/socket.io/socket.io.js"></script>
+  <script type="text/javascript">
+    // 1.イベントとコールバックの定義
+    var socketio = io.connect('http://trompot.mydns.jp:8090');
+
+    socketio.on("connected", function(name) {});
+    socketio.on("comment", function (data) { addMessage(data.value); });
+    socketio.on("images", function (data) { addMessage(data.value); });
+    socketio.on("video", function (data) { addMessage(data.value); });
+    socketio.on("text", function (data) { addMessage(data.value); });
+    socketio.on("disconnect", function () {});
+
+    // 2.イベントに絡ませる関数の定義
+    function start(name) {
+      socketio.emit("connected", name);
+    }
+
+    function publishComment() {
+      var textInput = document.getElementById('msg_input');
+      var msg = textInput.value;
+      socketio.emit("comment", {value: msg});
+      textInput.value = '';
+    }
+
+    function publishVideo() {
+        var textInput = document.getElementById('msg_input');
+        var msg = textInput.value;
+        socketio.emit("video", {value: msg});
+        textInput.value = '';
+    }
+
+    function publishImages() {
+      var textInput = document.getElementById('msg_input');
+      var msg = textInput.value;
+      socketio.emit("images", {value: msg});
+      textInput.value = '';
+    }
+    function addMessage (msg) {
+      var domMeg = document.createElement('div');
+      domMeg.innerHTML = msg;
+      msgArea.appendChild(domMeg);
+    }
+
+    function publishText() {
+      var textInput = document.getElementById('msg_input');
+      var msg = textInput.value;
+      socketio.emit("text", {value: msg});
+      textInput.value = '';
+    }
+
+    // 3.開始処理
+    var msgArea = document.getElementById("msg");
+    // start(myName);
+
+
+
+  </script>
+</body>
+</html>

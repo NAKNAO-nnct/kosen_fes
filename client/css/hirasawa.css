@@ -1,0 +1,25 @@
+.effect {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    /* background-color: #e84118; */
+    animation: pulsate 1s ease-out;
+    transition: color 0.3s ease 0s;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(1, 1);
+    }
+    50% {
+        opacity: 0.5;
+      /* background-color: rgb(+10, +10, +10); */
+    }
+    100% {
+        transform: scale(4, 4);
+        opacity: 0;
+      /* background-color: rgb(+50, +50, +50); */
+    }
+}
+  
